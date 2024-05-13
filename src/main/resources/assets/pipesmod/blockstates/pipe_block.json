@@ -1,0 +1,6 @@
+{
+    "variants": {
+      "": { "model": "pipesmod:block/pipe_block", "uvlock": true }
+    }
+  }
+  
