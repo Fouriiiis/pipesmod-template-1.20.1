@@ -1,11 +1,16 @@
 package com.pipesmod;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.serialization.DataResult;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.math.BlockPos;
 
 public class PipeBlockEntity extends BlockEntity {
@@ -22,6 +27,17 @@ public class PipeBlockEntity extends BlockEntity {
 
     public void setBaseBlock(BlockState blockState) {
         this.baseBlockState = blockState;
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
+    
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        return createNbt();
     }
 
     @Override

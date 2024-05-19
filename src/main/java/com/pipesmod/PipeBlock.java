@@ -28,7 +28,6 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     public static final BooleanProperty WEST = BooleanProperty.of("west");
     public static final BooleanProperty UP = BooleanProperty.of("up");
     public static final BooleanProperty DOWN = BooleanProperty.of("down");
-    public static final BooleanProperty LIGHT_ON = BooleanProperty.of("light_on");
 
     public PipeBlock(Settings settings) {
         super(settings);
@@ -45,6 +44,8 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new PipeBlockEntity(pos, state);
     }
+
+    
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
@@ -70,14 +71,10 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     @Override
 public BlockState getPlacementState(ItemPlacementContext ctx) {
     BlockState state = getDefaultState();
-    int connections = 0;
 
     for (Direction direction : Direction.values()) {
         if (shouldConnect(ctx, direction)) {
-            if (connections < 2) { // Only allow new connections if there are less than 2
-                state = state.with(getProperty(direction), true);
-                connections++;
-            }
+            state = state.with(getProperty(direction), true);
         }
     }
 
@@ -96,20 +93,8 @@ public BlockState getStateForNeighborUpdate(BlockState state, Direction directio
     if (!(neighborState.getBlock() instanceof PipeBlock)) {
         return state.with(getProperty(direction), false);
     }
-
-    // Count current connections before adding a new one
-    int connections = 0;
-    for (Direction dir : Direction.values()) {
-        if (state.get(getProperty(dir)) && dir != direction) { // exclude the current direction from count
-            connections++;
-        }
-    }
-
-    if (connections < 2) {
-        return state.with(getProperty(direction), true);
-    } else {
-        return state.with(getProperty(direction), false);
-    }
+    
+    return state.with(getProperty(direction), true);
 }
 
 
