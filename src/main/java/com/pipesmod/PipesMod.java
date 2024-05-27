@@ -21,14 +21,17 @@ public class PipesMod implements ModInitializer {
 
     public static Block PIPE_BLOCK;
     public static BlockEntityType<PipeBlockEntity> PIPE_BLOCK_ENTITY;
+    public static Block PIPE_ENTRANCE;
 
     @Override
     public void onInitialize() {
         // Initialize PIPE_BLOCK before registering it and using it to create PIPE_BLOCK_ENTITY.
         PIPE_BLOCK = Registry.register(Registries.BLOCK, new Identifier("pipesmod", "pipe_block"), new PipeBlock(getSetting()));
+        PIPE_ENTRANCE = Registry.register(Registries.BLOCK, new Identifier("pipesmod", "pipe_entrance"), new PipeEntrance(getSetting()));
 
         // Now register the BlockItem with the PIPE_BLOCK we just registered.
         Registry.register(Registries.ITEM, new Identifier("pipesmod", "pipe_block"), new BlockItem(PIPE_BLOCK, new FabricItemSettings()));
+        Registry.register(Registries.ITEM, new Identifier("pipesmod", "pipe_entrance"), new BlockItem(PIPE_ENTRANCE, new FabricItemSettings()));
 
         // Finally, register the BlockEntityType using the PIPE_BLOCK.
         PIPE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier("pipesmod", "pipe_block_entity"), FabricBlockEntityTypeBuilder.create(PipeBlockEntity::new, PIPE_BLOCK).build(null));

@@ -16,6 +16,7 @@ public class PipesModClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 		BlockEntityRendererRegistry.register(PipesMod.PIPE_BLOCK_ENTITY, PipeBlockEntityRenderer::new);
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getTranslucent(), PipesMod.PIPE_BLOCK);
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getTranslucent(), PipesMod.PIPE_ENTRANCE);
 		
 	}
 }

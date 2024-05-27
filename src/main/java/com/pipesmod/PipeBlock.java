@@ -1,7 +1,6 @@
 package com.pipesmod;
 
 import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -15,8 +14,11 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BlockStateRaycastContext;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
@@ -45,43 +47,37 @@ public class PipeBlock extends Block implements BlockEntityProvider {
         return new PipeBlockEntity(pos, state);
     }
 
-    
-
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN);
     }
 
+    @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+        // use the block below as the base block
+        BlockState baseBlock = world.getBlockState(pos.down());
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof PipeBlockEntity) {
-                // check if the block below is a pipe
-                BlockState belowBlockState = world.getBlockState(pos.down());
-                if (belowBlockState.getBlock() instanceof PipeBlock) {
-                    //get the block entity of the block below
-                    BlockEntity belowBlockEntity = world.getBlockEntity(pos.down());
-                    //call the get base block method of the block entity
-                    belowBlockState = ((PipeBlockEntity) belowBlockEntity).getBaseBlock();
-                }
-                //set the base block of the block entity to the block below
-                ((PipeBlockEntity) blockEntity).setBaseBlock(belowBlockState);
+            BlockState neighborBlockState = world.getBlockState(pos.down());
+            if (neighborBlockState.getBlock() instanceof PipeBlock) {
+            baseBlock = ((PipeBlockEntity) blockEntity).getBaseBlock();
             }
-        }
-    
-    @Override
-public BlockState getPlacementState(ItemPlacementContext ctx) {
-    BlockState state = getDefaultState();
-
-    for (Direction direction : Direction.values()) {
-        if (shouldConnect(ctx, direction)) {
-            state = state.with(getProperty(direction), true);
+            ((PipeBlockEntity) blockEntity).setBaseBlock(baseBlock);
         }
     }
 
-    return state;
-}
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        BlockState state = getDefaultState();
 
-    
+        for (Direction direction : Direction.values()) {
+            if (shouldConnect(ctx, direction)) {
+                state = state.with(getProperty(direction), true);
+            }
+        }
+
+        return state;
+    }
 
     private boolean shouldConnect(ItemPlacementContext ctx, Direction direction) {
         BlockState neighborState = ctx.getWorld().getBlockState(ctx.getBlockPos().offset(direction));
@@ -89,14 +85,13 @@ public BlockState getPlacementState(ItemPlacementContext ctx) {
     }
 
     @Override
-public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-    if (!(neighborState.getBlock() instanceof PipeBlock)) {
-        return state.with(getProperty(direction), false);
-    }
-    
-    return state.with(getProperty(direction), true);
-}
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (!(neighborState.getBlock() instanceof PipeBlock)) {
+            return state.with(getProperty(direction), false);
+        }
 
+        return state.with(getProperty(direction), true);
+    }
 
     private BooleanProperty getProperty(Direction direction) {
         return switch (direction) {
@@ -110,10 +105,10 @@ public BlockState getStateForNeighborUpdate(BlockState state, Direction directio
         };
     }
 
-      @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) { 
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!world.isClient) {
-            //output the block's connections to the console
+            // Output the block's connections to the console
             System.out.println("North: " + state.get(NORTH));
             System.out.println("South: " + state.get(SOUTH));
             System.out.println("East: " + state.get(EAST));
@@ -121,7 +116,7 @@ public BlockState getStateForNeighborUpdate(BlockState state, Direction directio
             System.out.println("Up: " + state.get(UP));
             System.out.println("Down: " + state.get(DOWN));
 
-            //print the block's base block
+            // Print the block's base block
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof PipeBlockEntity) {
                 BlockState baseBlock = ((PipeBlockEntity) blockEntity).getBaseBlock();

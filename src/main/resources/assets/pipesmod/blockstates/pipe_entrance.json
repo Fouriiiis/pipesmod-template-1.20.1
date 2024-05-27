@@ -1,0 +1,28 @@
+{
+    "variants": {
+      "orientation=north": {
+        "model": "pipesmod:block/pipe_entrance",
+        "y": 0
+      },
+      "orientation=south": {
+        "model": "pipesmod:block/pipe_entrance",
+        "y": 180
+      },
+      "orientation=east": {
+        "model": "pipesmod:block/pipe_entrance",
+        "y": 90
+      },
+      "orientation=west": {
+        "model": "pipesmod:block/pipe_entrance",
+        "y": 270
+      },
+      "orientation=up": {
+        "model": "pipesmod:block/pipe_entrance"
+      },
+      "orientation=down": {
+        "model": "pipesmod:block/pipe_entrance",
+        "x": 180
+      }
+    }
+  }
+  
