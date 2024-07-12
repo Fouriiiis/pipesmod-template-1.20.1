@@ -10,7 +10,8 @@
         "south": false,
         "east": false,
         "west": false,
-        "down": true
+        "down": true,
+        "up": true
       }
     },
     {
@@ -21,63 +22,6 @@
       },
       "when": {
         "south": true,
-        "east": false,
-        "west": false,
-        "up": false,
-        "down": false
-      }
-    },
-    {
-      "apply": {
-        "model": "pipesmod:block/pipe_straight",
-        "uvlock": false,
-        "y": 90,
-        "x": 90
-      },
-      "when": {
-        "north": false,
-        "south": false,
-        "west": true,
-        "up": false,
-        "down": false
-      }
-    },
-    
-
-    {
-      "apply": {
-        "model": "pipesmod:block/pipe_straight",
-        "uvlock": false
-      },
-      "when": {
-        "north": false,
-        "south": false,
-        "east": false,
-        "west": false,
-        "down": true
-      }
-    },
-    {
-      "apply": {
-        "model": "pipesmod:block/pipe_straight",
-        "uvlock": false
-      },
-      "when": {
-        "north": false,
-        "south": false,
-        "east": false,
-        "west": false,
-        "up": true,
-        "down": false
-      }
-    },
-    {
-      "apply": {
-        "model": "pipesmod:block/pipe_straight",
-        "uvlock": false,
-        "x": 90
-      },
-      "when": {
         "north": true,
         "east": false,
         "west": false,
@@ -95,7 +39,69 @@
       "when": {
         "north": false,
         "south": false,
+        "west": true,
         "east": true,
+        "up": false,
+        "down": false
+      }
+    },
+    
+
+    {
+      "apply": {
+        "model": "pipesmod:block/pipe_straight",
+        "uvlock": false
+      },
+      "when": {
+        "north": false,
+        "south": false,
+        "east": false,
+        "west": false,
+        "down": true,
+        "up": true
+      }
+    },
+    {
+      "apply": {
+        "model": "pipesmod:block/pipe_straight",
+        "uvlock": false
+      },
+      "when": {
+        "north": false,
+        "south": false,
+        "east": false,
+        "west": false,
+        "up": true,
+        "down": true
+      }
+    },
+    {
+      "apply": {
+        "model": "pipesmod:block/pipe_straight",
+        "uvlock": false,
+        "x": 90
+      },
+      "when": {
+        "north": true,
+        "south": true,
+        "east": false,
+        "west": false,
+        "up": false,
+        "down": false
+      }
+    },
+    {
+      "apply": {
+        "model": "pipesmod:block/pipe_straight",
+        "uvlock": false,
+        "y": 90,
+        "x": 90
+      },
+      "when": {
+        "north": false,
+        "south": false,
+        "east": true,
+        "west": true,
         "up": false,
         "down": false
       }
