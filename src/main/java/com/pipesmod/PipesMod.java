@@ -33,6 +33,7 @@ public class PipesMod implements ModInitializer {
         Registry.register(Registries.ITEM, new Identifier("pipesmod", "pipe_entrance"), new BlockItem(PIPE_ENTRANCE, new FabricItemSettings()));
 
         PIPE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier("pipesmod", "pipe_block_entity"), FabricBlockEntityTypeBuilder.create(PipeBlockEntity::new, PIPE_BLOCK).build(null));
+        TransportManager.initialize();
     }
 
     private static AbstractBlock.Settings getSetting() {

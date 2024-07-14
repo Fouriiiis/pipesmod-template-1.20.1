@@ -130,8 +130,9 @@ public class PipeEntrance extends Block {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        //print the connection direction
-        System.out.println(state.get(CONNECTION));
+        if (!world.isClient) {
+            TransportManager.startTransport(player, pos, state.get(CONNECTION).getDirection());
+        }
         return ActionResult.SUCCESS;
     }
 }
