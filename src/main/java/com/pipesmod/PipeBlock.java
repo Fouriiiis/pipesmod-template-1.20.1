@@ -9,6 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.ActionResult;
@@ -16,6 +17,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
@@ -27,10 +29,7 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     public static final BooleanProperty WEST = BooleanProperty.of("west");
     public static final BooleanProperty UP = BooleanProperty.of("up");
     public static final BooleanProperty DOWN = BooleanProperty.of("down");
-
-    // lit and hidden properties
-    //public static final BooleanProperty LIT = BooleanProperty.of("lit");
-    //public static final BooleanProperty HIDDEN = BooleanProperty.of("hidden");
+    public static final BooleanProperty LIT = BooleanProperty.of("lit");
 
     public PipeBlock(Settings settings) {
         super(settings);
@@ -40,7 +39,8 @@ public class PipeBlock extends Block implements BlockEntityProvider {
             .with(EAST, false)
             .with(WEST, false)
             .with(UP, false)
-            .with(DOWN, false));
+            .with(DOWN, false)
+            .with(LIT, false));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class PipeBlock extends Block implements BlockEntityProvider {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN);
+        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN, LIT);
     }
 
     @Override
@@ -118,5 +118,20 @@ public class PipeBlock extends Block implements BlockEntityProvider {
             }
         }
         return ActionResult.SUCCESS;
+    }
+
+    //@Override
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        if (state.get(LIT)) {
+            System.out.println("setting lit to false");
+            world.setBlockState(pos, state.with(LIT, false));
+        }
+    }
+
+    // Method to switch to lit state for a set amount of time
+    public void switchLitState(World world, BlockPos pos, BlockState state, int ticks) {
+        System.out.println("setting lit to true");
+        world.setBlockState(pos, state.with(LIT, true));
+        world.scheduleBlockTick(pos, this, ticks);
     }
 }

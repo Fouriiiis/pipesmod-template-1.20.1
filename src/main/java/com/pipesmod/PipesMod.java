@@ -21,18 +21,28 @@ public class PipesMod implements ModInitializer {
 
     public static Block PIPE_BLOCK;
     public static BlockEntityType<PipeBlockEntity> PIPE_BLOCK_ENTITY;
+    
     public static Block PIPE_ENTRANCE;
+
+    public static Block TELEPIPE_BLOCK;
+    public static BlockEntityType<TelePipeBlockEntity> TELEPIPE_BLOCK_ENTITY;
 
     @Override
     public void onInitialize() {
         PIPE_BLOCK = Registry.register(Registries.BLOCK, new Identifier("pipesmod", "pipe_block"), new PipeBlock(getSetting()));
         PIPE_ENTRANCE = Registry.register(Registries.BLOCK, new Identifier("pipesmod", "pipe_entrance"), new PipeEntrance(getSetting()));
 
-        // Register the custom item class for PIPE_BLOCK
+        // Register the custom item class for PIPE_BLOCK and PIPE_ENTRANCE
         Registry.register(Registries.ITEM, new Identifier("pipesmod", "pipe_block"), new PipeBlockItem(PIPE_BLOCK, new FabricItemSettings()));
         Registry.register(Registries.ITEM, new Identifier("pipesmod", "pipe_entrance"), new BlockItem(PIPE_ENTRANCE, new FabricItemSettings()));
 
         PIPE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier("pipesmod", "pipe_block_entity"), FabricBlockEntityTypeBuilder.create(PipeBlockEntity::new, PIPE_BLOCK).build(null));
+
+        // Register the TelePipe block and its block entity
+        TELEPIPE_BLOCK = Registry.register(Registries.BLOCK, new Identifier("pipesmod", "telepipe_block"), new TelePipeBlock(getSetting()));
+        Registry.register(Registries.ITEM, new Identifier("pipesmod", "telepipe_block"), new BlockItem(TELEPIPE_BLOCK, new FabricItemSettings()));
+        TELEPIPE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier("pipesmod", "telepipe_block_entity"), FabricBlockEntityTypeBuilder.create(TelePipeBlockEntity::new, TELEPIPE_BLOCK).build(null));
+
         TransportManager.initialize();
     }
 

@@ -44,11 +44,24 @@ public class TransportManager {
     private static void movePlayer(PlayerEntity player, TransportData data) {
         World world = player.getWorld();
         BlockPos nextPos = data.currentPos.offset(data.direction);
+        BlockState nextState = world.getBlockState(nextPos);
+        Block nextBlock = nextState.getBlock();
 
-        if (world.getBlockState(nextPos).getBlock() instanceof PipeBlock) {
+        if (nextBlock instanceof TelePipeBlock) {
+            // Find the nearest non-TelePipe block
+            BlockPos teleportPos = findNearestNonTelePipe(world, nextPos, data.direction);
+            if (teleportPos != null) {
+                data.currentPos = teleportPos;
+                data.direction = getNextDirection(world, teleportPos, data.direction);
+                // Do not mark as completed; let transport continue
+            } else {
+                data.isCompleted = true; // End if no valid teleport position found
+            }
+        } else if (nextBlock instanceof PipeBlock) {
             data.currentPos = nextPos;
             data.direction = getNextDirection(world, nextPos, data.direction);
-        } else if (world.getBlockState(nextPos).getBlock() instanceof PipeEntrance) {
+            ((PipeBlock) nextBlock).switchLitState(world, nextPos, nextState, 100); // Set the lit state for 10 ticks
+        } else if (nextBlock instanceof PipeEntrance) {
             data.currentPos = nextPos;
             data.isCompleted = true; // End the transport
         } else {
@@ -57,6 +70,25 @@ public class TransportManager {
 
         if (data.isCompleted && player instanceof ServerPlayerEntity) {
             ((ServerPlayerEntity) player).changeGameMode(data.originalGameMode);
+        }
+    }
+
+    private static BlockPos findNearestNonTelePipe(World world, BlockPos startPos, Direction initialDirection) {
+        BlockPos currentPos = startPos;
+        Direction direction = initialDirection;
+
+        while (true) {
+            currentPos = currentPos.offset(direction);
+            BlockState state = world.getBlockState(currentPos);
+            Block block = state.getBlock();
+
+            if (block instanceof TelePipeBlock) {
+                direction = getNextDirection(world, currentPos, direction);
+            } else if (block instanceof PipeBlock || block instanceof PipeEntrance) {
+                return currentPos;
+            } else {
+                return null; // No valid position found
+            }
         }
     }
 
@@ -69,7 +101,7 @@ public class TransportManager {
             if (direction != currentDirection.getOpposite()) {
                 BlockState neighborState = world.getBlockState(pos.offset(direction));
                 Block neighborBlock = neighborState.getBlock();
-                if (neighborBlock instanceof PipeBlock || neighborBlock instanceof PipeEntrance) {
+                if (neighborBlock instanceof PipeBlock || neighborBlock instanceof PipeEntrance || neighborBlock instanceof TelePipeBlock) {
                     connections++;
                     if (connections == 1 || connections == 2) {
                         nextDirection = direction;
