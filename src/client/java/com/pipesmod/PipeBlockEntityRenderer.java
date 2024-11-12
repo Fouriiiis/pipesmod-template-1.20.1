@@ -11,10 +11,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
-
-import java.util.List;
 
 import net.fabricmc.api.EnvType;
 
@@ -33,16 +30,11 @@ public class PipeBlockEntityRenderer implements BlockEntityRenderer<PipeBlockEnt
             return;
         }
 
-        BlockPos pos = entity.getPos();
-
-        // get a list of the connection states for each direction
-        List<Boolean> connections = entity.getConnections();
-
         // Get the original baked model
         BakedModel originalModel = blockRenderManager.getModel(state);
 
-        // Wrap the original model with the CulledBakedModel
-        BakedModel culledModel = new CulledBakedModel(originalModel, connections);
+        BakedModel culledModel = new CulledBakedModel(originalModel, entity.getCachedState());
+
 
         // Render the culled model at the entity's position
         blockRenderManager.getModelRenderer().render(
