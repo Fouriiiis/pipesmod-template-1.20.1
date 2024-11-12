@@ -87,7 +87,7 @@ public class PipeBlock extends Block implements BlockEntityProvider {
         return state.with(getProperty(direction), true);
     }
 
-    private BooleanProperty getProperty(Direction direction) {
+    public static BooleanProperty getProperty(Direction direction) {
         return switch (direction) {
             case NORTH -> NORTH;
             case SOUTH -> SOUTH;

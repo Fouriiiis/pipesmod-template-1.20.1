@@ -1,5 +1,7 @@
 package com.pipesmod;
 
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.DataResult;
@@ -12,6 +14,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 public class PipeBlockEntity extends BlockEntity {
 
@@ -24,6 +27,19 @@ public class PipeBlockEntity extends BlockEntity {
     public BlockState getBaseBlock() {
         return baseBlockState;
     }
+
+    //method to get the parent pipe block
+    public List<Boolean> getConnections() {
+        return List.of(
+            getCachedState().get(PipeBlock.DOWN),
+            getCachedState().get(PipeBlock.UP),
+            getCachedState().get(PipeBlock.NORTH),
+            getCachedState().get(PipeBlock.SOUTH),
+            getCachedState().get(PipeBlock.WEST),
+            getCachedState().get(PipeBlock.EAST)
+        );
+    }
+    
 
     public void setBaseBlock(BlockState blockState) {
         this.baseBlockState = blockState;

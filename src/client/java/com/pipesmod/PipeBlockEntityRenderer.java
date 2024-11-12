@@ -11,7 +11,11 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+
+import java.util.List;
+
 import net.fabricmc.api.EnvType;
 
 @Environment(EnvType.CLIENT)
@@ -23,18 +27,26 @@ public class PipeBlockEntityRenderer implements BlockEntityRenderer<PipeBlockEnt
     public void render(PipeBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         BlockRenderManager blockRenderManager = MinecraftClient.getInstance().getBlockRenderManager();
 
-        //retrieve the block state from the block entity
+        // Retrieve the block state from the block entity
         BlockState state = entity.getBaseBlock();
         if (state == null) {
             return;
         }
 
-        //get the baked model of the current block state
-        BakedModel model = blockRenderManager.getModel(state);
+        BlockPos pos = entity.getPos();
 
-        //render the model at the entity's position
+        // get a list of the connection states for each direction
+        List<Boolean> connections = entity.getConnections();
+
+        // Get the original baked model
+        BakedModel originalModel = blockRenderManager.getModel(state);
+
+        // Wrap the original model with the CulledBakedModel
+        BakedModel culledModel = new CulledBakedModel(originalModel, connections);
+
+        // Render the culled model at the entity's position
         blockRenderManager.getModelRenderer().render(
-            entity.getWorld(), model, state, entity.getPos(), matrices,
+            entity.getWorld(), culledModel, state, entity.getPos(), matrices,
             vertexConsumers.getBuffer(RenderLayer.getSolid()),
             false, Random.create(), state.getRenderingSeed(entity.getPos()),
             OverlayTexture.DEFAULT_UV
